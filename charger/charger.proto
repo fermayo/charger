@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package charger;
+
+service Charger {
+	rpc ExecCommand (CommandRequest) returns (stream CommandResponse);
+}
+
+message CommandRequest {
+	repeated string args = 1;
+}
+
+message CommandResponse {
+	string line = 1;
+	enum StreamType {
+		STDOUT = 0;
+		STDERR = 1;
+	}
+	StreamType streamType = 2;
+}
