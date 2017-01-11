@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
-	"io"
 
 	pb "github.com/fermayo/charger/charger"
 	"golang.org/x/net/context"

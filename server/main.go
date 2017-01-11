@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
-	"fmt"
 	"path/filepath"
 
 	pb "github.com/fermayo/charger/charger"
@@ -18,7 +18,7 @@ const (
 type server struct{}
 
 var (
-	commands []string;
+	commands []string
 )
 
 func (s *server) ExecCommand(in *pb.CommandRequest, stream pb.Charger_ExecCommandServer) error {
