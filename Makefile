@@ -1,11 +1,14 @@
 pwd = $(shell pwd)
 
-.PHONY: cli server
+.PHONY: mac-cli server
 
-all: cli server
+all: mac-cli server
 
-cli: schema
+docker-cli: schema
 	docker build -t fermayo/charger-cli -f cli/Dockerfile .
+
+mac-cli: schema
+	docker run --rm -v $(pwd):/go/src/github.com/fermayo/charger -w /go/src/github.com/fermayo/charger/cli -e GOOS=darwin -e GOARCH=amd64 golang:1.6 go build -v -o ../build/charger
 
 server: schema
 	docker build -t fermayo/charger-server -f server/Dockerfile .

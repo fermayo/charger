@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	address = "chargerd:9000"
+	address = "localhost:9000"
 )
 
 func main() {

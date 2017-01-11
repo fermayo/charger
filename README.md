@@ -17,8 +17,8 @@ Building the images
 
 or
 
-	make cli     # Builds fermayo/charger-cli
-	make server  # Builds fermayo/charger-server
+	make mac-cli  # Builds the `build/charger` binary for macOS
+	make server   # Builds the `fermayo/charger-server` docker image
 
 
 Run the charger server
@@ -39,7 +39,6 @@ TBD
 
 ## CLI interface
 
-	alias charger="docker run -it --link chargerd fermayo/charger-cli"
 	charger [<command>]
 
 

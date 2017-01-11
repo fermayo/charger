@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"fmt"
+	"path/filepath"
 
 	pb "github.com/fermayo/charger/charger"
 	"google.golang.org/grpc"
@@ -21,6 +22,11 @@ var (
 )
 
 func (s *server) ExecCommand(in *pb.CommandRequest, stream pb.Charger_ExecCommandServer) error {
+	if len(in.Args) == 1 {
+		if err := stream.Send(&pb.CommandResponse{Line: fmt.Sprintf("\nUsage: %s COMMAND\n", filepath.Base(in.Args[0]))}); err != nil {
+			return err
+		}
+	}
 	if len(commands) == 0 {
 		if err := stream.Send(&pb.CommandResponse{Line: "No commands registered"}); err != nil {
 			return err
