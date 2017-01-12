@@ -21,7 +21,7 @@ const (
 type server struct{}
 
 type streamWriter struct {
-	stream pb.Charger_ExecCommandServer
+	stream pb.Router_ExecCommandServer
 	streamType pb.CommandResponse_StreamType
 }
 
@@ -29,7 +29,7 @@ var (
 	app *cli.App
 )
 
-func (s *server) ExecCommand(in *pb.CommandRequest, stream pb.Charger_ExecCommandServer) error {
+func (s *server) ExecCommand(in *pb.CommandRequest, stream pb.Router_ExecCommandServer) error {
 	stdout := &streamWriter{stream: stream, streamType: pb.CommandResponse_STDOUT}
 	stderr := &streamWriter{stream: stream, streamType: pb.CommandResponse_STDERR}
 
@@ -102,7 +102,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterChargerServer(s, &server{})
+	pb.RegisterRouterServer(s, &server{})
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package charger;
 
-service Charger {
+service Router {
 	rpc ExecCommand (CommandRequest) returns (stream CommandResponse);
 }
 

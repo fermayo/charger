@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("could not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewChargerClient(conn)
+	c := pb.NewRouterClient(conn)
 
 	// Contact the server and print out its response.
 	stream, err := c.ExecCommand(context.Background(), &pb.CommandRequest{Args: os.Args})
