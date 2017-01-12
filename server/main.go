@@ -10,6 +10,7 @@ import (
 	"github.com/urfave/cli"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"os"
 )
 
 const (
@@ -46,7 +47,11 @@ func (s *streamWriter) Write(p []byte) (n int, err error) {
 func main() {
 	// Set up CLI handler
 	app = cli.NewApp()
-	app.Usage = "Charge all the things"
+	app.Usage = os.Getenv("USAGE")
+	app.Version = os.Getenv("VERSION")
+	if app.Version == "" {
+		app.HideVersion = true
+	}
 
 	// Start GRPC server
 	lis, err := net.Listen("tcp", port)
