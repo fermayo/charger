@@ -28,6 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not execute: %v", err)
 	}
+	var exitCode int32 = 0
 	for {
 		resp, err := stream.Recv()
 		if err == io.EOF {
@@ -41,5 +42,7 @@ func main() {
 		} else if resp.StreamType == pb.CommandResponse_STDERR {
 			os.Stderr.Write(resp.Buffer)
 		}
+		exitCode = resp.ExitCode
 	}
+	os.Exit(int(exitCode))
 }

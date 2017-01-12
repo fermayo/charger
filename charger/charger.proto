@@ -17,4 +17,5 @@ message CommandResponse {
 		STDERR = 1;
 	}
 	StreamType streamType = 2;
+	int32 exitCode = 3;
 }
