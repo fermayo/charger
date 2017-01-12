@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -38,9 +37,9 @@ func main() {
 			log.Fatalf("error on receiving response: %v", err)
 		}
 		if resp.StreamType == pb.CommandResponse_STDOUT {
-			fmt.Fprintln(os.Stdout, resp.Line)
+			os.Stdout.Write(resp.Buffer)
 		} else if resp.StreamType == pb.CommandResponse_STDERR {
-			fmt.Fprintln(os.Stderr, resp.Line)
+			os.Stderr.Write(resp.Buffer)
 		}
 	}
 }

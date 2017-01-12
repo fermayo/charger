@@ -11,7 +11,7 @@ message CommandRequest {
 }
 
 message CommandResponse {
-	string line = 1;
+	bytes buffer = 1;
 	enum StreamType {
 		STDOUT = 0;
 		STDERR = 1;

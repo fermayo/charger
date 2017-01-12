@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"path/filepath"
 
+	"fmt"
 	pb "github.com/fermayo/charger/charger"
+	"github.com/urfave/cli"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -17,34 +18,37 @@ const (
 
 type server struct{}
 
+type streamWriter struct {
+	stream pb.Charger_ExecCommandServer
+}
+
 var (
-	commands []string
+	app *cli.App
 )
 
 func (s *server) ExecCommand(in *pb.CommandRequest, stream pb.Charger_ExecCommandServer) error {
-	if len(in.Args) == 1 {
-		if err := stream.Send(&pb.CommandResponse{Line: fmt.Sprintf("\nUsage: %s COMMAND\n", filepath.Base(in.Args[0]))}); err != nil {
-			return err
-		}
-	}
-	if len(commands) == 0 {
-		if err := stream.Send(&pb.CommandResponse{Line: "No commands registered"}); err != nil {
-			return err
-		}
-	} else {
-		if err := stream.Send(&pb.CommandResponse{Line: "Available commands:"}); err != nil {
-			return err
-		}
-		for _, command := range commands {
-			if err := stream.Send(&pb.CommandResponse{Line: fmt.Sprintf("   %s", command)}); err != nil {
-				return err
-			}
-		}
-	}
+	w := &streamWriter{stream: stream}
+	app.Writer = w
+	app.ErrWriter = w
+	app.Name = filepath.Base(in.Args[0])
+	app.UsageText = fmt.Sprintf("%s COMMAND", filepath.Base(in.Args[0]))
+	app.Run(in.Args)
 	return nil
 }
 
+func (s *streamWriter) Write(p []byte) (n int, err error) {
+	if err := s.stream.Send(&pb.CommandResponse{Buffer: p}); err != nil {
+		return 0, err
+	}
+	return len(p), nil
+}
+
 func main() {
+	// Set up CLI handler
+	app = cli.NewApp()
+	app.Usage = "Charge all the things"
+
+	// Start GRPC server
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
